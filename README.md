@@ -40,16 +40,21 @@ Hệ thống bao gồm 15 bảng dữ liệu được kết nối chặt chẽ t
 
 ```mermaid
 erDiagram
-    customers ||--o{ orders : "has"
+    geography ||--o{ customers : "zip"
+    geography ||--o{ orders : "zip"
+    customers ||--o{ orders : "customer_id"
     orders ||--|| payments : "1:1"
     orders ||--o| shipments : "0 or 1"
     orders ||--o{ returns : "0 or many"
     orders ||--o{ reviews : "0 or many"
     orders ||--|{ order_items : "has"
     products ||--o{ order_items : "product_id"
-    products ||--o{ inventory : "1 per month"
-    geography ||--o{ customers : "zip"
+    products ||--o{ returns : "product_id"
+    products ||--o{ reviews : "product_id"
+    products ||--o{ inventory : "1 snapshot/month"
     order_items }o--o| promotions : "promo_id"
+    web_traffic ||--o{ sales : "impacts (on date)"
+    order_items ||--o{ sales : "aggregates to"
 ```
 
 ### Phân lớp dữ liệu:
