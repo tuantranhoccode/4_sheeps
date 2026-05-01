@@ -36,7 +36,7 @@ bốn con cừu/
 
 ## 📊 3. Hệ thống dữ liệu & Thiết kế logic (Data Ecosystem)
 
-Hệ thống bao gồm 15 bảng dữ liệu được kết nối chặt chẽ theo sơ đồ thực thể (ERD):
+Hệ thống bao gồm 13 bảng dữ liệu được kết nối chặt chẽ theo sơ đồ thực thể (ERD):
 
 ```mermaid
 erDiagram
