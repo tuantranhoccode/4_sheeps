@@ -1,103 +1,96 @@
 # 🏆 Dự án Bốn Con Cừu — Datathon 2026
 
-Chào mừng bạn đến với giải pháp phân tích dữ liệu và dự báo doanh thu của đội **Bốn Con Cừu**. Dự án này được xây dựng nhằm giải quyết bài toán tối ưu hóa vận hành và chiến lược khách hàng cho một doanh nghiệp thương mại điện tử thời trang tại Việt Nam.
+Chào mừng bạn đến với giải pháp phân tích dữ liệu và dự báo doanh thu của đội **Bốn Con Cừu**. Dự án này được thiết kế để giải quyết bài toán tối ưu hóa vận hành cho một doanh nghiệp thương mại điện tử thời trang hàng đầu tại Việt Nam.
 
 ---
 
-## 📌 3 Trụ cột chiến lược (Strategic Pillars)
-Dự án tập trung vào việc chuyển đổi dữ liệu thô thành giá trị kinh doanh thông qua:
-1.  **Exploratory Data Analysis (EDA)**: Giải mã hành vi khách hàng và hiệu suất sản phẩm qua 10 năm dữ liệu (2012-2022).
-2.  **Customer Intelligence**: Phân khúc khách hàng chiến lược (RFM) và dự báo giá trị vòng đời (**Predictive CLV**).
-3.  **Financial Forecasting**: Dự báo Doanh thu & Giá vốn 2023-2024 với thuật toán xử lý biến động mùa vụ Tết (**Tet-Smooth Ensemble**).
+## 📌 1. Bối cảnh & Mục tiêu (Business Context)
+Doanh nghiệp sở hữu hệ thống dữ liệu khổng lồ từ năm 2012 đến 2022. Thách thức lớn nhất là chuyển đổi hàng triệu dòng giao dịch thành các quyết định kinh doanh thực tế:
+- ✅ **Tối ưu tồn kho**: Dự báo chính xác nhu cầu để giảm chi phí lưu kho.
+- ✅ **Chiến lược khách hàng**: Phân loại và giữ chân khách hàng VIP (Champions) có giá trị cao.
+- ✅ **Hiệu quả Marketing**: Định lượng ROI của từng kênh tiếp thị dựa trên giá trị vòng đời (**CLV**).
 
 ---
 
-## 📁 Cấu trúc dự án (Project Architecture)
+## 📁 2. Cấu trúc dự án (Project Architecture)
 
 ```
 bốn con cừu/
+├── DATATHON2026_BỐN-CON-CỪU.pdf # [REPORT] Báo cáo chi tiết dự án
 ├── database/           # [INPUT] 15 file CSV dữ liệu thô (Master & Transaction)
 ├── notebooks/          # [PROCESS] Luồng thực thi chính
 │   ├── PART1.ipynb     # Khám phá dữ liệu & Trả lời 10 câu hỏi EDA
 │   ├── PART2.ipynb     # PART 2: EDA, SQL & CUSTOMER STRATEGY (RFM-CLV ANALYTICS)
 │   └── PART3.ipynb     # Mô hình dự báo Revenue & COGS (Hybrid Ensemble)
 ├── output/             # [OUTPUT] Kết quả xuất bản chuyên nghiệp
-│   ├── figures/        # Biểu đồ phân tích (Waterfall, Gauge, Treemap, Bubble...)
-│   ├── forecasting/    # File nộp bài (submission.csv) và biểu đồ xu hướng
-│   ├── tables/         # Báo cáo chi tiết (RFM Audit, Marketing ROI, Top Categories)
+│   ├── figures/        # Biểu đồ phân tích (Waterfall, Gauge, Treemap...)
+│   ├── forecasting/    # File nộp bài (submission.csv) và biểu đồ dự báo
+│   ├── tables/         # Báo cáo chi tiết (RFM Audit, ROI scenarios)
 │   └── processed/      # Master Dataset sạch (master_orders_final.csv.gz)
-├── src/                # [ENGINE] Mã nguồn modular
-│   ├── analysis/       # Logic phân tích RFM, CLV, Marketing
-│   ├── config/         # Cấu hình đường dẫn động (paths.py)
-│   ├── data/           # Bộ nạp dữ liệu (loader.py)
-│   ├── features/       # Feature Engineering & CLV Modeling
-│   └── visualization/  # Thư viện vẽ biểu đồ chuyên sâu
-└── requirements.txt    # Danh sách thư viện (Plotly, Kaleido, Lifetimes, XGBoost...)
+├── src/                # [ENGINE] Mã nguồn modular (Analysis, Config, Visualization)
+├── requirements.txt    # Danh sách thư viện cần thiết
+└── README.md           # [DOCS] Hướng dẫn dự án này (Bạn đang xem)
 ```
 
 ---
 
-## 📊 Hệ thống dữ liệu & Sơ đồ quan hệ (ERD)
+## 📊 3. Hệ thống dữ liệu & Thiết kế logic (Data Ecosystem)
 
-Dự án xử lý dữ liệu từ 15 bảng quan hệ phức tạp. Chúng tôi đã thiết kế lại sơ đồ logic để tối ưu hóa việc truy vấn (SQL Joins):
+Hệ thống bao gồm 15 bảng dữ liệu được kết nối chặt chẽ theo sơ đồ thực thể (ERD):
 
 ```mermaid
 erDiagram
-    customers ||--o{ orders : "đặt hàng"
-    orders ||--|| payments : "thanh toán 1:1"
-    orders ||--o{ order_items : "chi tiết"
-    products ||--o{ order_items : "thuộc về"
-    order_items }o--o| promotions : "áp dụng KM"
-    products ||--o{ inventory : "tồn kho hàng tháng"
-    geography ||--o{ customers : "vùng miền"
+    customers ||--o{ orders : "has"
+    orders ||--|| payments : "1:1"
+    orders ||--o| shipments : "0 or 1"
+    orders ||--o{ returns : "0 or many"
+    orders ||--o{ reviews : "0 or many"
+    orders ||--|{ order_items : "has"
+    products ||--o{ order_items : "product_id"
+    products ||--o{ inventory : "1 per month"
+    geography ||--o{ customers : "zip"
+    order_items }o--o| promotions : "promo_id"
 ```
 
-### 🗂 Các lớp dữ liệu chính:
-- **Master Data**: Thông tin gốc về `products`, `customers`, `promotions`, `geography`.
-- **Transaction Data**: Nhật ký giao dịch `orders`, `order_items`, `payments`, `shipments`, `returns`, `reviews`.
-- **Operational Data**: Dữ liệu vận hành `inventory`, `web_traffic`.
+### Phân lớp dữ liệu:
+- **Master Data**: Thông tin gốc về `products` (Giá vốn/Giá bán), `customers`, `promotions` (Logic giảm giá), `geography`.
+- **Transaction Data**: Nhật ký giao dịch `orders`, `order_items`, `payments`, `returns` (Lý do trả hàng).
+- **Operational Data**: Dữ liệu vận hành `inventory` (Chụp tồn kho hàng tháng), `web_traffic` (Sessions/Bounce Rate).
 
 ---
 
-## 🧠 Quy trình phân tích RFM & Chiến lược khách hàng (PART 2)
+## 🧠 4. Quy trình Phân tích Chiến lược (PART 2)
 
-Chúng tôi áp dụng mô hình RFM (Recency, Frequency, Monetary) kết hợp với **BG/NBD & Gamma-Gamma** để phân loại khách hàng:
+Chúng tôi triển khai luồng phân tích khách hàng 7 bước dựa trên mô hình RFM & CLV:
 
-| Phân khúc | Đặc điểm chiến lược |
-| :--- | :--- |
-| **Champions** | Khách hàng VIP, mua gần đây nhất, thường xuyên nhất và chi tiêu nhiều nhất. |
-| **Loyal Customers** | Khách hàng trung thành, chi tiêu ổn định, cần chương trình ưu đãi riêng. |
-| **At Risk** | Khách hàng từng mua rất nhiều nhưng đã lâu không quay lại. Cần chiến dịch Win-back. |
-| **Can't Lose Them** | Nhóm chi tiêu cực lớn nhưng sắp rời bỏ. Cần can thiệp trực tiếp. |
-| **Lost** | Khách hàng đã rời bỏ hoàn toàn, không nên tập trung ngân sách Marketing. |
+### 📑 Phương pháp chấm điểm RFM (Audited):
+| Chỉ số | Cách tính | Ý nghĩa |
+| :--- | :--- | :--- |
+| **Recency** | Số ngày từ đơn cuối đến 31/12/2022 | Mức độ tương tác gần nhất |
+| **Frequency** | Tổng số đơn hàng không hủy | Mức độ trung thành |
+| **Monetary** | Tổng doanh thu thực thu (NMV) | Đóng góp tài chính |
 
----
-
-## 🔮 Mô hình dự báo Hybrid (PART 3)
-
-Mô hình dự báo của chúng tôi không chỉ dựa trên thống kê đơn thuần mà tích hợp các yếu tố vận hành:
-- **Hybrid Ensemble**: Kết hợp **LightGBM**, **XGBoost** và **Prophet** để đạt độ chính xác tối ưu trên Kaggle.
-- **Tet-Smooth Logic**: Thuật toán đặc biệt giúp "mượt hóa" dữ liệu vào các giai đoạn Tết Nguyên Đán (vốn là điểm nhiễu lớn nhất của dữ liệu TMĐT tại Việt Nam).
-- **Feature Engineering**: Tích hợp các chỉ số từ `web_traffic` và `inventory_health` làm biến dẫn dắt (leading indicators) cho dự báo doanh thu.
+### 🎯 Chiến lược hành động theo phân khúc:
+- **Champions / Loyal**: Triển khai chương trình "Thân thiết", quyền mua sớm sản phẩm mới. Tuyệt đối không lạm dụng Discount.
+- **Potential Loyalist**: Gửi kịch bản "Onboarding", tặng voucher cho lần mua thứ 2.
+- **At Risk / Can't Lose Them**: Kích hoạt chiến dịch "Win-back" với mức chiết khấu cao để cứu vãn dòng tiền.
 
 ---
 
-## 🛠️ Hướng dẫn cài đặt & Tái lập kết quả
+## 🔮 5. Mô hình Dự báo tương lai (PART 3)
 
-1.  **Cài đặt thư viện:**
-    ```bash
-    pip install -r requirements.txt
-    ** hoặc ** 
-    pip3 install -r requirements.txt (MacOS)
+Để đạt được độ chính xác cao nhất cho bài toán Kaggle, chúng tôi sử dụng mô hình **Hybrid Ensemble**:
+- **Thuật toán**: Kết hợp LightGBM, XGBoost và Prophet.
+- **Xử lý đặc thù**: Tích hợp thuật toán **Tet-Smooth** để "mượt hóa" dữ liệu vào các giai đoạn Tết Nguyên Đán tại Việt Nam.
+- **Dự báo**: 548 ngày tiếp theo (2023 - 01/07/2024).
 
-    ```
+---
 
-2.  **Cách chạy:**
-    - Chạy lần lượt các Notebook trong thư mục `notebooks/`.
-    - Toàn bộ kết quả (Ảnh, CSV) sẽ được tự động lưu vào thư mục `output/` để bạn dễ dàng đóng gói nộp bài.
+## 🛠️ 6. Hướng dẫn Tái lập kết quả
 
-3.  **Lưu ý kỹ thuật:**
-    - Hệ thống sử dụng đường dẫn động (Pathlib), bạn có thể chạy dự án trên bất kỳ máy tính nào mà không cần sửa code.
+1.  **Cài đặt:** `pip install -r requirements.txt` (Dùng `pip3` trên MacOS).
+2.  **Thứ tự:** Chạy lần lượt các Notebook trong thư mục `notebooks/`.
+3.  **Kết quả:** Toàn bộ ảnh báo cáo và file nộp bài sẽ tự động xuất hiện trong thư mục `output/`.
 
 ---
 ## ** Dự án thực hiện bởi đội Bốn Con Cừu ** ##
