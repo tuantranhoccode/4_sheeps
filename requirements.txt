@@ -1,0 +1,15 @@
+pandas
+numpy
+scikit-learn
+lightgbm
+prophet
+matplotlib
+seaborn
+ipykernel
+plotly
+kaleido
+lifetimes
+pyarrow
+nbformat>=4.2.0
+ipywidgets
+jinja2
