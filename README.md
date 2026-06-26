@@ -5,7 +5,7 @@ Chào mừng bạn đến với giải pháp phân tích dữ liệu và dự b�
 ---
 
 ## 📌 1. Bối cảnh & Mục tiêu (Business Context)
-Doanh nghiệp sở hữu hệ thống dữ liệu khổng lồ từ năm 2012 đến 2022. Thách thức lớn nhất là chuyển đổi hàng triệu dòng giao dịch thành các quyết định kinh doanh thực tế:
+Doanh nghiệp sở hữu hệ thống dữ liệu khổng lồ từ năm 2012 đến 2022. Thách thức lớn nhất là chuyển đổi hàng triệu dòng giao dịch thành các quyết định kinh doanh thực tế
 - ✅ **Tối ưu tồn kho**: Dự báo chính xác nhu cầu để giảm chi phí lưu kho.
 - ✅ **Chiến lược khách hàng**: Phân loại và giữ chân khách hàng VIP (Champions) có giá trị cao.
 - ✅ **Hiệu quả Marketing**: Định lượng ROI của từng kênh tiếp thị dựa trên giá trị vòng đời (**CLV**).
